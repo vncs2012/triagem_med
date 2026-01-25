@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chat Triagem Médica</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+      .message-enter {
+        animation: slideIn 0.3s ease-out forwards;
+      }
+      
+      @keyframes slideIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 4px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #475569;
+      }
+
+      .markdown-body ul { list-style-type: disc; margin-left: 1.5rem; }
+      .markdown-body p { margin-bottom: 0.5rem; }
+      .markdown-body strong { font-weight: 700; }
+      .markdown-body pre { background: #1e293b; color: #fff; padding: 0.5rem; border-radius: 0.5rem; overflow-x: auto; }
+      .markdown-body code { background: rgba(0,0,0,0.1); padding: 0.1rem 0.3rem; border-radius: 0.25rem; font-family: monospace; }
+      .dark .markdown-body code { background: rgba(255,255,255,0.1); }
+    </style>
+  </head>
+  <body class="bg-gray-100 dark:bg-gray-900 h-[100dvh] flex flex-col items-center justify-center p-0 md:p-4 transition-colors duration-300">
+    
+    <div class="w-full max-w-4xl bg-white dark:bg-gray-800 md:rounded-2xl shadow-2xl overflow-hidden h-full md:h-[90vh] flex flex-col relative transition-colors duration-300">
+      
+      <div class="bg-medical-600 p-4 text-white flex justify-between items-center shadow-md z-10">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 p-2 rounded-lg">
+                <i class="fa-solid fa-staff-snake text-2xl"></i>
+            </div>
+            <div>
+                <h1 class="font-bold text-lg leading-tight">Triagem Inteligente</h1>
+                <p class="text-xs text-blue-100 flex items-center gap-1">
+                    <span id="status-indicator" class="w-2 h-2 rounded-full bg-green-400"></span>
+                    <span id="status-text">Online</span>
+                </p>
+            </div>
+        </div>
+        
+        <div class="flex gap-2">
+            <button onclick="testConnection()" class="p-2 hover:bg-white/10 rounded-full transition-colors text-xs border border-white/20" title="Testar Conexão com Servidor">
+                📡 Testar API
+            </button>
+            <button onclick="toggleDarkMode()" class="p-2 hover:bg-white/10 rounded-full transition-colors" title="Alternar Modo Escuro">
+                <i class="fa-solid fa-moon dark:hidden"></i>
+                <i class="fa-solid fa-sun hidden dark:inline"></i>
+            </button>
+            <button onclick="clearHistory()" class="p-2 hover:bg-white/10 rounded-full transition-colors" title="Limpar Histórico">
+                <i class="fa-solid fa-trash-can"></i>
+            </button>
+        </div>
+      </div>
+
+      <div id="chat-container" class="flex-1 overflow-y-auto p-4 flex flex-col gap-4 scroll-smooth">
+        <div class="flex gap-3 message-enter">
+            <div class="w-8 h-8 rounded-full bg-medical-500 flex items-center justify-center text-white shrink-0">
+                <i class="fa-solid fa-robot"></i>
+            </div>
+            <div class="max-w-[85%] bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-2xl rounded-tl-none p-4 shadow-sm">
+                <div class="markdown-body text-sm md:text-base">
+                    🏥 <strong>BEM-VINDO AO SISTEMA DE TRIAGEM MÉDICA</strong>
+
+                    Olá! Sou o Orquestrador do Sistema de Detecção de Pneumonia.
+                    Posso ajudar com:
+                    <ul>
+                        <li>Análise de Imagens de Raio-X</li>
+                        <li>Consulta e Cadastro de Pacientes</li>
+                        <li>Geração de Relatórios e Estatísticas</li>
+                    </ul>
+
+                    <strong>Como posso ajudar hoje?</strong>
+                </div>
+                <div class="text-[10px] text-gray-400 mt-1 text-right">Agora</div>
+            </div>
+        </div>
+      </div>
+
+      <div class="px-4 py-2 bg-gray-50 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 overflow-x-auto">
+        <div class="flex gap-2 whitespace-nowrap pb-2">
+            <button onclick="sendQuickAction('Listar todos os pacientes')" class="px-3 py-1 text-xs bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full hover:bg-medical-50 dark:hover:bg-medical-900/30 transition-colors text-gray-600 dark:text-gray-300">
+                👥 Listar Pacientes
+            </button>
+            <button onclick="sendQuickAction('Gere estatísticas gerais do sistema')" class="px-3 py-1 text-xs bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full hover:bg-medical-50 dark:hover:bg-medical-900/30 transition-colors text-gray-600 dark:text-gray-300">
+                📊 Estatísticas
+            </button>
+            <button onclick="document.getElementById('file-upload').click()" class="px-3 py-1 text-xs bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-full hover:bg-medical-50 dark:hover:bg-medical-900/30 transition-colors text-gray-600 dark:text-gray-300">
+                📷 Enviar Raio-X
+            </button>
+        </div>
+      </div>
+
+      <div class="p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
+        <form id="chat-form" class="flex gap-2 items-end relative">
+          <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="handleFileUpload(this)">
+          
+          <button type="button" onclick="document.getElementById('file-upload').click()" class="p-3 text-gray-400 hover:text-medical-500 transition-colors" title="Enviar Imagem">
+            <i class="fa-solid fa-paperclip text-xl"></i>
+          </button>
+
+          <div class="flex-1 relative">
+            <textarea
+                id="user-input"
+                class="w-full bg-gray-100 dark:bg-gray-700 border-0 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-medical-500 text-gray-800 dark:text-white resize-none max-h-32 shadow-inner"
+                placeholder="Digite sua mensagem..."
+                rows="1"
+                oninput="adjustHeight(this)"
+                onkeydown="handleEnter(event)"
+            ></textarea>
+          </div>
+          
+          <button
+            type="button"
+            onclick="submitMessage()"
+            id="send-btn"
+            class="bg-medical-600 hover:bg-medical-700 text-white rounded-full p-3 w-12 h-12 flex items-center justify-center transition-all shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+          >
+            <i class="fa-solid fa-paper-plane"></i>
+          </button>
+        </form>
+        <div class="text-center text-xs text-gray-400 mt-2">
+            IA pode cometer erros. Verifique informações críticas.
+        </div>
+      </div>
+
+    </div>
+
+    <script>
+      const API_URL = "http://localhost:8000"; 
+      const chatContainer = document.getElementById("chat-container");
+      const chatForm = document.getElementById("chat-form");
+      const userInput = document.getElementById("user-input");
+      const sendBtn = document.getElementById("send-btn");
+
+      function adjustHeight(el) {
+        el.style.height = 'auto';
+        el.style.height = (el.scrollHeight) + 'px';
+      }
+
+      function handleEnter(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            submitMessage();
+        }
+      }
+
+      function scrollToBottom() {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+
+      function formatTime() {
+        return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+      }
+
+      function toggleDarkMode() {
+        document.documentElement.classList.toggle('dark');
+        localStorage.setItem('theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+      }
+
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark');
+      }
+
+      function clearHistory() {
+        if(confirm('Tem certeza que deseja limpar o histórico?')) {
+            chatContainer.innerHTML = '';
+            location.reload(); 
+        }
+      }
+
+      function testConnection() {
+        alert("Testando conexão com: " + (API_URL || window.location.origin) + "/health ...");
+        fetch(`${API_URL}/health`)
+            .then(r => r.json())
+            .then(data => {
+                alert("✅ Conexão BEM SUCEDIDA!\nStatus: " + JSON.stringify(data));
+                document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-green-400";
+                document.getElementById('status-text').innerText = "Online";
+            })
+            .catch(err => {
+                alert("❌ FALHA NA CONEXÃO:\n" + err.message + "\n\nVerifique se o servidor está rodando.");
+                document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('status-text').innerText = "Offline";
+            });
+      }
+
+      function sendQuickAction(text) {
+        userInput.value = text;
+        adjustHeight(userInput);
+        userInput.focus();
+        submitMessage();
+      }
+
+      function addMessage(text, isUser, type = 'text', fileData = null) {
+        const div = document.createElement("div");
+        div.className = `flex gap-3 message-enter ${isUser ? 'flex-row-reverse' : ''}`;
+        
+        const avatar = isUser ? 
+            `<div class="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-user"></i></div>` :
+            `<div class="w-8 h-8 rounded-full bg-medical-500 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot"></i></div>`;
+
+        let content = '';
+        
+        if (type === 'image' && fileData) {
+            content = `
+                <div class="mb-2">
+                    <img src="${fileData}" class="max-w-[200px] rounded-lg border border-gray-200 dark:border-gray-600">
+                </div>
+                ${text ? `<div class="markdown-body">${text}</div>` : ''}
+            `;
+        } else {
+            content = `<div class="markdown-body">${marked.parse(text)}</div>`;
+        }
+
+        div.innerHTML = `
+            ${avatar}
+            <div class="max-w-[85%] ${isUser ? 'bg-medical-600 text-white' : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200'} rounded-2xl ${isUser ? 'rounded-tr-none' : 'rounded-tl-none'} p-4 shadow-sm">
+                ${content}
+                <div class="text-[10px] ${isUser ? 'text-blue-200' : 'text-gray-400'} mt-1 text-right">${formatTime()}</div>
+            </div>
+        `;
+
+        if(isUser) {
+            const mdBody = div.querySelector('.markdown-body');
+            mdBody.classList.add('user-message-content');
+        }
+
+        chatContainer.appendChild(div);
+        scrollToBottom();
+      }
+
+      function showTyping() {
+        const div = document.createElement("div");
+        div.id = "typing-indicator";
+        div.className = "flex gap-3 message-enter";
+        div.innerHTML = `
+            <div class="w-8 h-8 rounded-full bg-medical-500 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-robot"></i></div>
+            <div class="bg-gray-100 dark:bg-gray-700 rounded-2xl rounded-tl-none p-4 shadow-sm flex items-center gap-1">
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0s"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
+                <div class="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
+            </div>
+        `;
+        chatContainer.appendChild(div);
+        scrollToBottom();
+        return div;
+      }
+
+      function handleFileUpload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        if (file.size > 10 * 1024 * 1024) {
+            alert('Arquivo muito grande! Máximo 10MB.');
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+            addMessage(`Enviando imagem para análise: ${file.name}...`, true, 'image', e.target.result);
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const loadingMsg = showTyping(); // Mostra que está carregando o upload
+            
+            try {
+                const uploadResponse = await fetch(`${API_URL}/upload`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (!uploadResponse.ok) throw new Error('Falha no upload da imagem');
+                
+                const uploadResult = await uploadResponse.json();
+                const absolutePath = uploadResult.filepath;
+                
+                if(loadingMsg.parentNode) loadingMsg.parentNode.removeChild(loadingMsg);
+                
+                processMessage(`Analise a imagem localizada em: ${absolutePath}`);
+                
+            } catch (error) {
+                if(loadingMsg.parentNode) loadingMsg.parentNode.removeChild(loadingMsg);
+                addMessage(`❌ Erro no upload: ${error.message}`, false);
+            }
+        };
+        reader.readAsDataURL(file);
+        
+        input.value = '';
+      }
+
+      async function processMessage(messageText) {
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+        const loading = showTyping();
+
+        try {
+          console.log(API_URL)
+            const response = await fetch(`${API_URL}/chat`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ message: messageText }),
+            });
+
+            if (!response.ok) throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+
+            const data = await response.json();
+            
+            if(loading.parentNode) loading.parentNode.removeChild(loading);
+            
+            addMessage(data.response, false);
+
+        } catch (error) {
+            if(loading.parentNode) loading.parentNode.removeChild(loading);
+            addMessage(`❌ **Erro de conexão:** ${error.message}. Verifique o console.`, false);
+            console.error("Detalhes do erro:", error);
+            document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-red-500";
+            document.getElementById('status-text').innerText = "Offline";
+        } finally {
+            userInput.disabled = false;
+            sendBtn.disabled = false;
+            userInput.focus();
+        }
+      }
+
+      async function submitMessage() {
+        const message = userInput.value.trim();
+        if (!message) return;
+
+        addMessage(message, true);
+        userInput.value = "";
+        userInput.style.height = 'auto'; // Reset height
+        
+        await processMessage(message);
+      }
+
+      chatForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        submitMessage();
+      });
+
+      if (window.location.protocol === 'file:') {
+        const warningParams = new URLSearchParams({
+            title: "⚠️ Acesso Incorreto Detectado",
+            message: "Você abriu este arquivo diretamente. Para que o chat funcione, você deve acessar pelo servidor.",
+            link: "http://localhost:8000"
+        });
+        
+        chatContainer.innerHTML = `
+            <div class="flex flex-col items-center justify-center h-full p-8 text-center space-y-4">
+                <div class="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center text-3xl mb-2">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 dark:text-gray-100">Acesso Incorreto</h2>
+                <p class="text-gray-600 dark:text-gray-300 max-w-md">
+                    O chat não funciona quando aberto diretamente como arquivo (file://).<br>
+                    Por favor, acesse através do servidor que você iniciou.
+                </p>
+                <a href="http://localhost:8000" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:scale-105">
+                    Acessar http://localhost:8000
+                </a>
+            </div>
+        `;
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+      } else {
+          fetch(`${API_URL}/health`)
+            .then(r => {
+                if(r.ok) {
+                    document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-green-400";
+                    document.getElementById('status-text').innerText = "Online";
+                }
+            })
+            .catch(() => {
+                document.getElementById('status-indicator').className = "w-2 h-2 rounded-full bg-red-500";
+                document.getElementById('status-text').innerText = "Offline";
+            });
+      }
+
+    </script>
+  </body>
+</html>
