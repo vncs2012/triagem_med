@@ -30,11 +30,11 @@ O **AgentTriagem** é um sistema híbrido que combina **Redes Neurais Convolucio
 
 ## 📚 Documentação
 
-Para mais detalhes sobre o sistema, consulte os documentos na pasta [docs/](file:///home/vncs/Documentos/Particular/AgentTriagem/docs):
+Para mais detalhes sobre o sistema, consulte os documentos na pasta [docs/](docs):
 
-- [Artigo Técnico (Markdown)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/artigo_tecnico.md) - Descrição detalhada da arquitetura e resultados.
-- [Short Paper (Docx)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/Short%20Paper%20AgentTriagem.docx) - Formato de submissão SBC.
-- [Short Paper (PDF)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/Short%20Paper%20AgentTriagem.pdf) - Versão em PDF.
+- [Artigo Técnico (Markdown)](docs/artigo_tecnico.md) - Descrição detalhada da arquitetura e resultados.
+- [Short Paper (Docx)](docs/Short%20Paper%20AgentTriagem.docx) - Formato de submissão SBC.
+- [Short Paper (PDF)](docs/Short%20Paper%20AgentTriagem.pdf) - Versão em PDF.
 
 ---
 

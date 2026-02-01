@@ -30,11 +30,11 @@
 
 ## 📚 Documentation
 
-For more details about the system, see the documents in the [docs/](file:///home/vncs/Documentos/Particular/AgentTriagem/docs) folder:
+For more details about the system, see the documents in the [docs/](docs) folder:
 
-- [Technical Article (Markdown)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/artigo_tecnico.md) - Detailed description of the architecture and results.
-- [Short Paper (Docx)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/Short%20Paper%20AgentTriagem.docx) - SBC submission format.
-- [Short Paper (PDF)](file:///home/vncs/Documentos/Particular/AgentTriagem/docs/Short%20Paper%20AgentTriagem.pdf) - PDF version.
+- [Technical Article (Markdown)](docs/artigo_tecnico.md) - Detailed description of the architecture and results.
+- [Short Paper (Docx)](docs/Short%20Paper%20AgentTriagem.docx) - SBC submission format.
+- [Short Paper (PDF)](docs/Short%20Paper%20AgentTriagem.pdf) - PDF version.
 
 ---
 
