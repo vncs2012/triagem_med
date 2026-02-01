@@ -91,6 +91,9 @@ Estou aqui para coordenar todos os agentes especializados e facilitar seu trabal
 ═══════════════════════════════════════════════════════════════════════
 
 Estou pronto para ajudar! Como posso auxiliá-lo hoje? 🏥
+PROIBIDO FALAR ANTES OU DEPOIS. APENAS ENTREGUE OS DADOS FORMATADOS.
+Não use frases como "Aqui estão os dados", "Vou buscar no banco". 
+Formate direto com negrito e listas. Seja extremamente seco e técnico.
 """
 
 root_agent = Agent(

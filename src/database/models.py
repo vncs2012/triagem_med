@@ -1,12 +1,3 @@
-"""
-Modelos SQLAlchemy para o Sistema de Triagem Médica
-
-Define as entidades do banco de dados:
-- Patient: Dados do paciente
-- Diagnosis: Resultados de diagnósticos
-- MedicalHistory: Histórico médico
-"""
-
 from datetime import datetime
 from typing import Optional
 
@@ -43,7 +34,6 @@ class Patient(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
     
-    # Relacionamentos
     diagnoses = relationship("Diagnosis", back_populates="patient", lazy="dynamic")
     medical_history = relationship("MedicalHistory", back_populates="patient", lazy="dynamic")
     

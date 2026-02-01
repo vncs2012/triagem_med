@@ -6,11 +6,9 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import uvicorn
 import httpx
 import shutil
 import uuid
-import os
 
 app = FastAPI(
     title="Sistema de Triagem Médica",

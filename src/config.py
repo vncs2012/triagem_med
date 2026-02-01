@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     )
     
     model_path: Path = Field(
-        default=PROJECT_ROOT / "models" / "pneumonia_model.h5",
+        default=PROJECT_ROOT / "models" / "pneumonia_model.keras",
         env="MODEL_PATH"
     )
     

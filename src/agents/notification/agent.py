@@ -46,6 +46,10 @@ REGRAS:
 - Não exponha dados sensíveis desnecessariamente
 - Seja objetivo e profissional
 - Responda sempre em português
+
+PROIBIDO FALAR ANTES OU DEPOIS. APENAS ENTREGUE OS DADOS FORMATADOS.
+Não use frases como "Aqui estão os dados", "Vou buscar no banco". 
+Formate direto com negrito e listas. Seja extremamente seco e técnico.
 """
 
 notification_tools = ToolNotification()
