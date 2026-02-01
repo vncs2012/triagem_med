@@ -17,4 +17,3 @@ data/reports/*
 data/uploads/*
 *.db
 *_model_*.h5
-*.ipynb
