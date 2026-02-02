@@ -12,13 +12,10 @@ from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from src.agents.orchestrator.agent import root_agent
 
-# Cria o servidor MCP usando FastMCP (high-level API)
 mcp = FastMCP("triagem-orquestrador")
 
-# Sessões para manter contexto
 session_service = InMemorySessionService()
 
-# Runner do ADK
 runner = Runner(
     agent=root_agent,
     app_name="triagem_medica",
@@ -28,27 +25,9 @@ runner = Runner(
 
 @mcp.tool()
 async def chat(message: str, session_id: str = "default") -> str:
-    """
-    Conversa com o Orquestrador do Sistema de Triagem Médica.
-    O orquestrador coordena internamente os agentes:
-    - triagem_agent: análise de raio-X
-    - database_agent: dados de pacientes
-    - notification_agent: emails e alertas
-    - report_agent: relatórios e estatísticas
-    
-    Envie sua mensagem e o orquestrador decidirá qual agente usar.
-    
-    Args:
-        message: Mensagem para o orquestrador
-        session_id: ID da sessão (opcional, mantém contexto)
-    
-    Returns:
-        Resposta do orquestrador
-    """
     try:
         print(f"[MCP] Mensagem: {message}")
         
-        # Garante que a sessão existe
         session = await session_service.get_session(
             app_name="triagem_medica",
             user_id="mcp_user",
@@ -62,14 +41,12 @@ async def chat(message: str, session_id: str = "default") -> str:
                 session_id=session_id
             )
         
-        # Cria o objeto de mensagem corretamente
         from google.genai import types
         user_content = types.Content(
             role="user",
             parts=[types.Part.from_text(text=message)]
         )
         
-        # Executa o orquestrador
         final_response = ""
         async for event in runner.run_async(
             user_id="mcp_user",
@@ -98,14 +75,10 @@ async def chat(message: str, session_id: str = "default") -> str:
         return error_msg
 
 
-# === HTTP Server com SSE ===
-
 async def health(request):
-    """Health check."""
     return JSONResponse({"status": "ok", "server": "mcp-orchestrator"})
 
 
-# App Starlette com SSE integrado
 app = Starlette(
     debug=True,
     routes=[
@@ -123,8 +96,7 @@ if __name__ == "__main__":
     print("")
     print("Endpoints:")
     print("  GET  /health    -> Status do servidor")
-    print("  GET  /sse       -> Conexão SSE (MCP)")
-    print("  POST /messages/ -> Mensagens MCP")
+    print("  POST / -> Mensagens MCP")
     print("")
     print("URL: http://localhost:8001")
     print("=" * 60)

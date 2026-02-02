@@ -1,33 +1,16 @@
 from datetime import datetime
-from typing import Optional
-
-from sqlalchemy import (
-    Column,
-    DateTime,
-    Float,
-    ForeignKey,
-    Integer,
-    String,
-    Text,
-    create_engine,
-)
 from sqlalchemy.orm import declarative_base, relationship
+from sqlalchemy import Column, DateTime, Float, ForeignKey, Integer, String, Text
 
 Base = declarative_base()
 
-
 class Patient(Base):
-    """
-    Modelo de Paciente.
-    
-    Armazena informações cadastrais dos pacientes atendidos pelo sistema.
-    """
     __tablename__ = "patients"
     
     id = Column(String(20), primary_key=True)
     name = Column(String(200), nullable=False)
-    birth_date = Column(String(10), nullable=True)  # YYYY-MM-DD
-    cpf = Column(String(14), unique=True, nullable=True)  # XXX.XXX.XXX-XX
+    birth_date = Column(String(10), nullable=True)
+    cpf = Column(String(14), unique=True, nullable=True)
     contact = Column(String(20), nullable=True)
     email = Column(String(200), nullable=True)
     address = Column(Text, nullable=True)
@@ -38,7 +21,6 @@ class Patient(Base):
     medical_history = relationship("MedicalHistory", back_populates="patient", lazy="dynamic")
     
     def to_dict(self) -> dict:
-        """Converte o modelo para dicionário."""
         return {
             "id": self.id,
             "name": self.name,
@@ -56,28 +38,21 @@ class Patient(Base):
 
 
 class Diagnosis(Base):
-    """
-    Modelo de Diagnóstico.
-    
-    Armazena resultados de triagens realizadas pelo sistema.
-    """
     __tablename__ = "diagnoses"
     
     id = Column(String(20), primary_key=True)
     patient_id = Column(String(20), ForeignKey("patients.id"), nullable=False)
     image_path = Column(String(500), nullable=True)
-    classification = Column(String(20), nullable=False)  # NORMAL ou PNEUMONIA
+    classification = Column(String(20), nullable=False)
     confidence = Column(Float, nullable=False)
-    priority = Column(String(20), nullable=False)  # LOW, MEDIUM, HIGH, CRITICAL
+    priority = Column(String(20), nullable=False)
     notes = Column(Text, nullable=True)
     timestamp = Column(DateTime, default=datetime.utcnow)
     created_by = Column(String(100), default="system")
     
-    # Relacionamento
     patient = relationship("Patient", back_populates="diagnoses")
     
     def to_dict(self) -> dict:
-        """Converte o modelo para dicionário."""
         return {
             "id": self.id,
             "patient_id": self.patient_id,
@@ -95,25 +70,18 @@ class Diagnosis(Base):
 
 
 class MedicalHistory(Base):
-    """
-    Modelo de Histórico Médico.
-    
-    Armazena o histórico médico geral do paciente.
-    """
     __tablename__ = "medical_history"
     
     id = Column(Integer, primary_key=True, autoincrement=True)
     patient_id = Column(String(20), ForeignKey("patients.id"), nullable=False)
     description = Column(Text, nullable=False)
-    condition_type = Column(String(100), nullable=True)  # Ex: alergia, doença crônica
+    condition_type = Column(String(100), nullable=True)
     date_recorded = Column(DateTime, default=datetime.utcnow)
     recorded_by = Column(String(100), nullable=True)
     
-    # Relacionamento
     patient = relationship("Patient", back_populates="medical_history")
     
     def to_dict(self) -> dict:
-        """Converte o modelo para dicionário."""
         return {
             "id": self.id,
             "patient_id": self.patient_id,

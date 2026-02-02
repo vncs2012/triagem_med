@@ -60,7 +60,7 @@ FLUXO DE TRABALHO COMPLETO:
 4. **Apresentação dos Resultados**
    Formate a resposta de forma clara e profissional:
 
-   🔬 **RESULTADO DA ANÁLISE DE TRIAGEM**
+   **RESULTADO DA ANÁLISE DE TRIAGEM**
    
    **Classificação:** [NORMAL/PNEUMONIA]
    **Nível de Confiança:** [XX.X%]

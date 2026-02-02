@@ -16,7 +16,7 @@ class ToolNotification():
                 json.dump([], f)
 
     def enviar_email(self, email: str, paciente: str, diagnostico: str, recomendacao: str) -> dict:
-        """Envia um email real para o paciente com o resultado do seu exame.
+        """Envia um email para o paciente com o resultado do seu exame.
         
         Args:
             email: O endereço de email do paciente
@@ -27,7 +27,6 @@ class ToolNotification():
         Returns:
             Dicionário confirmando o status do envio
         """
-        # Se não houver configurações de SMTP, simula o sucesso para não travar o fluxo
         if not self.settings.smtp_user or not self.settings.smtp_password:
             print(f"[SIMULADO] Email para {email}: Diagnóstico {diagnostico}")
             return {"status": "sucesso", "mensagem": f"Email simualdo enviado para {email} (Configure SMTP no .env para envio real)"}

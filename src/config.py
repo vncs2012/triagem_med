@@ -1,5 +1,4 @@
 from pathlib import Path
-
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -43,7 +42,6 @@ class Settings(BaseSettings):
         self._ensure_directories()
 
     def _ensure_directories(self):
-        """Cria diretórios necessários se não existirem."""
         directories = [
             self.data_dir,
             self.reports_dir,
@@ -53,11 +51,9 @@ class Settings(BaseSettings):
             directory.mkdir(parents=True, exist_ok=True)
     
     def is_model_available(self) -> bool:
-        """Verifica se o modelo treinado está disponível."""
         return self.model_path.exists()
     
     def get_database_path(self) -> Path:
-        """Extrai o caminho do banco de dados da URL."""
         if self.database_url.startswith("sqlite:///"):
             return Path(self.database_url.replace("sqlite:///", ""))
         return self.data_dir / "database.db"

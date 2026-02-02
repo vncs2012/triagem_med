@@ -16,7 +16,7 @@ class Seed():
         """
         patients = [
             Patient(
-                id="P001",
+            id="P001",
             name="Maria Silva Santos",
             birth_date="1985-03-15",
             cpf="123.456.789-00",
@@ -198,21 +198,17 @@ class Seed():
         print("SEED DO BANCO DE DADOS")
         print("=" * 50 + "\n")
         
-        # Inicializar banco
         print("📦 Inicializando banco de dados...")
         self.database.init_database()
     
-        # Seed pacientes
         print("\n👤 Criando pacientes...")
         n_patients = self.seed_patients()
         print(f"   ✅ {n_patients} pacientes")
     
-        # Seed diagnósticos
         print("\n🏥 Criando diagnósticos...")
         n_diagnoses = self.seed_diagnoses()
         print(f"   ✅ {n_diagnoses} diagnósticos")
     
-        # Seed histórico
         print("\n📋 Criando histórico médico...")
         n_history = self.seed_medical_history()
         print(f"   ✅ {n_history} registros")

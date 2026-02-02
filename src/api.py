@@ -6,8 +6,8 @@ from fastapi import FastAPI, HTTPException, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import httpx
 import shutil
+import httpx
 import uuid
 
 app = FastAPI(
@@ -35,10 +35,6 @@ class ChatResponse(BaseModel):
 
 @app.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
-    """
-    Envia uma mensagem para o MCP Server (Orquestrador).
-    O MCP Server processa e retorna a resposta.
-    """
     try:
         print(f"[API] Mensagem recebida: {request.message}")
         print(f"[API] Conectando ao MCP Server via SSE em {MCP_SERVER_URL}...")
@@ -50,8 +46,8 @@ async def chat(request: ChatRequest):
             async with ClientSession(read_stream, write_stream) as session:
                 await session.initialize()
                 
-                tools = await session.list_tools()
-                print(f"[API] Ferramentas disponíveis: {tools}")
+                # tools = await session.list_tools()
+                # print(f"[API] Ferramentas disponíveis: {tools}")
                 
                 result = await session.call_tool(
                     name="chat",
@@ -81,7 +77,6 @@ async def chat(request: ChatRequest):
 
 @app.get("/health")
 async def health():
-    """Verifica status do servidor e do MCP."""
     try:
         async with httpx.AsyncClient() as client:
             mcp_health = await client.get(f"{MCP_SERVER_URL}/health", timeout=5.0)
@@ -97,26 +92,20 @@ async def health():
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...)):
-    """
-    Recebe um arquivo de imagem, salva no servidor e retorna o caminho absoluto.
-    Isso permite que os agentes leiam o arquivo como se fosse local.
-    """
     try:
         upload_dir = Path(__file__).parent.parent / "data" / "uploads"
         upload_dir.mkdir(parents=True, exist_ok=True)
         
         file_extension = Path(file.filename).suffix
         if not file_extension:
-            file_extension = ".jpg" # Default fallback
+            file_extension = ".jpg"
             
         unique_filename = f"{uuid.uuid4()}{file_extension}"
         file_path = upload_dir / unique_filename
         
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-            
-        print(f"[UPLOAD] Arquivo salvo em: {file_path}")
-        
+                    
         return {
             "filename": file.filename,
             "filepath": str(file_path.absolute()),

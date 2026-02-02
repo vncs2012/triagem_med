@@ -21,10 +21,6 @@ class DatabaseConnection():
 
 
     def get_engine(self) -> Engine:
-        """
-        Retorna a engine do SQLAlchemy.
-        Cria a engine se ainda não existir.
-        """
         if self._engine is None:
             
             db_path = self.settings.get_database_path()
@@ -47,9 +43,6 @@ class DatabaseConnection():
 
 
     def get_session_factory(self) -> sessionmaker:
-        """
-        Retorna a factory de sessões.
-        """
         if self._sessionLocal is None:
             engine = self.get_engine()
             self._sessionLocal = sessionmaker(
@@ -63,9 +56,6 @@ class DatabaseConnection():
 
     @contextmanager
     def get_session(self) -> Generator[Session, None, None]:
-        """
-        Context manager para obter uma sessão do banco de dados.
-        """
         SessionLocal = self.get_session_factory()
         session = SessionLocal()
         
@@ -81,43 +71,18 @@ class DatabaseConnection():
 
 
     def init_database(self):
-        """
-        Inicializa o banco de dados criando todas as tabelas.
-        """
         engine = self.get_engine()
         Base.metadata.create_all(bind=engine)
         logger.info("Banco de dados inicializado")
 
 
     def drop_database(self):
-        """
-        Remove todas as tabelas do banco de dados.
-        """
         engine = self.get_engine()
         Base.metadata.drop_all(bind=engine)
         logger.warning("Todas as tabelas foram removidas")
 
 
     def reset_database(self):
-        """
-        Reseta o banco de dados (drop + create).
-        """
         self.drop_database()
         self.init_database()
         logger.info("Banco de dados resetado")
-
-
-if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
-    
-    print("Testando conexão com banco de dados...")
-    database = DatabaseConnection()
-    database.init_database()
-    
-    with database.get_session() as session:
-        from sqlalchemy import inspect
-        inspector = inspect(database.get_engine())
-        tables = inspector.get_table_names()
-        print(f"Tabelas criadas: {tables}")
-    
-    print("Teste concluído!")

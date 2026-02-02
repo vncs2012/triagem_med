@@ -37,7 +37,7 @@ class ToolReport():
                 f.write("=" * 80 + "\n\n")
                 
                 f.write(f"Data: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M:%S')}\n")
-                f.write(f"ID do Paciente: {patient_id}\n\n")
+                f.write(f"Código do Paciente: {patient_id}\n\n")
                 
                 f.write("-" * 80 + "\n")
                 f.write("RESULTADO DO DIAGNÓSTICO\n")
@@ -54,11 +54,9 @@ class ToolReport():
                 f.write("DISCLAIMER\n")
                 f.write("-" * 80 + "\n\n")
                 f.write("Este é um sistema de triagem automatizada.\n")
-                f.write("Consulte um médico para diagnóstico definitivo.\n\n")
                 
                 f.write("=" * 80 + "\n")
             
-            print(f"[SISTEMA] Relatório gerado: {output_path}")
             return {
                 "status": "sucesso", 
                 "mensagem": f"Relatório gerado com sucesso",

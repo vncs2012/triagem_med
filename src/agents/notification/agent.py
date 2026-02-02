@@ -38,7 +38,7 @@ QUANDO USAR CADA FERRAMENTA:
 FORMATO DA RESPOSTA:
 Após enviar as notificações, confirme ao usuário:
 
-✅ Notificações enviadas:
+Notificações enviadas:
 • Email para [paciente] em [email]
 • Alerta para equipe médica sobre [diagnóstico]
 
@@ -49,7 +49,7 @@ REGRAS:
 
 PROIBIDO FALAR ANTES OU DEPOIS. APENAS ENTREGUE OS DADOS FORMATADOS.
 Não use frases como "Aqui estão os dados", "Vou buscar no banco". 
-Formate direto com negrito e listas. Seja extremamente seco e técnico.
+Formate direto com negrito e listas. Seja extremamente técnico.
 """
 
 notification_tools = ToolNotification()

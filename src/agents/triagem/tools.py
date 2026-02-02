@@ -1,9 +1,8 @@
-
-from src.config import Settings
-from tensorflow import keras
-from PIL import Image
 import numpy as np
+from PIL import Image
 from pathlib import Path
+from tensorflow import keras
+from src.config import Settings
 
 class ToolTriagem():
     def __init__(self):
@@ -79,9 +78,6 @@ class ToolTriagem():
                 "notes": notes
             }
             
-            print(f"[AGENTE] Imagem analisada: {image_path}")
-            print(f"[AGENTE] Resultado: {class_name} ({confidence:.2%}) - Prioridade: {priority} - {prediction}")
-            
             return {
                 "status": "sucesso", 
                 "mensagem": "Imagem analisada com sucesso",
@@ -90,7 +86,6 @@ class ToolTriagem():
 
         except Exception as e:
             import traceback
-            print(f"[AGENTE] Erro ao analisar imagem: {str(e)}")
             print(traceback.format_exc())
             return {
                 "status": "erro", 

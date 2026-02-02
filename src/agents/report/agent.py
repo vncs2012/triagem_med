@@ -45,7 +45,7 @@ CONTEÚDO DO RELATÓRIO PDF:
 
 FORMATO DA RESPOSTA:
 Após gerar relatório, confirme:
-✅ Relatório gerado:
+Relatório gerado:
 • Paciente: [nome]
 • Diagnóstico: [resultado]
 • Arquivo: [caminho do PDF]
